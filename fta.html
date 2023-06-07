@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SEM</title>
+    <!-- base:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <script type="text/javascript" src="functions.js"></script>
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- endinject -->
+
+</head>
+
+<body>
+    <script>loadCountryList()</script>
+    <div class="main">
+        <header>
+            <div class="header-bar">
+                <img class="logo-img" src="images/logo1.png" alt="logo" />
+            </div>
+        </header>
+        <div class="container-scroller d-flex">
+            <!-- partial:./partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item sidebar-category">
+                        <p>Dashboard</p>
+                    </li>
+                    <li class="nav-item nav-item-start">
+                        <a class="nav-link" href="hscodefinder.html">
+                            <span class="menu-title">HS Code Finder</span>
+                        </a>
+                    </li>
+
+                    <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <span class="menu-title">Export Price Calculator</span>
+                    </a>
+                </li> -->
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                            aria-controls="ui-basic">
+                            <span class="menu-title">Importers</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-basic">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="index.html">Import Duty Calculator</a>
+                                </li>
+                                <li class="nav-item"> <a class="nav-link" href="fta.html">Save Import Duty</a></li>
+                                <!-- <li class="nav-item"> <a class="nav-link" href="#">Best Market to Import</a></li> -->
+                            </ul>
+                        </div>
+                    </li>
+
+                </ul>
+            </nav>
+            <!-- partial -->
+            <div class="container-fluid page-body-wrapper">
+                <!-- partial:./partials/_navbar.html -->
+                <nav class="navbar col-lg-12 col-12 px-0 py-0 py-lg-4 d-flex flex-row">
+                    <div class="navbar-menu-wrapper d-flex align-items-center">
+
+                        <div class="navbar-brand-wrapper">
+                            <h3>Save Tariff with Trade Agreements</h3>
+                        </div>
+                    </div>
+                </nav>
+                <!-- partial -->
+
+                <!-- Duty calculator form -->
+                <div>
+                    <div class="col-md-10 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="forms-sample row" onsubmit="return getSavedDuty()" id="myForm">
+                                    <div class="form-group col-sm-6">
+                                        <label for="tradeFlow" class="col  col-form-label">Select Trade Flow</label>
+                                        <div class="btn-group col">
+                                            <select class="form-control form-control-lg" id="tradeFlow">
+                                                <option>Choose your trade flow</option>
+                                                <option>Importer</option>
+                                                <option>Exporter</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="import_country" class="col col-form-label">Select Import
+                                            Country</label>
+                                        <div class="btn-group col">
+                                            <input class="form-control form-control-lg" id="import_country"
+                                                list="import_countryList" onchange="loadData()"
+                                                placeholder="Import from...">
+                                            <datalist id="import_countryList">
+                                                <!-- insert country dropdown -->
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="export_country" class="col col-form-label">Select Export
+                                            Country</label>
+                                        <div class="btn-group col">
+                                            <input class="form-control form-control-lg" id="export_country"
+                                                list="export_countryList" placeholder="Export to...">
+                                            <datalist id="export_countryList">
+                                                <!-- insert country dropdown -->
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="hscode" class="col col-form-label">HS code</label>
+                                        <div class="btn-group col">
+                                            <input type="text" class="form-control form-control-lg" id="hscode"
+                                                oninput="getUserInput()" placeholder="Enter HS Code here" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="mode" class="col col-form-label">Mode of Transport</label>
+                                        <div class="btn-group col">
+                                            <select class="form-control form-control-lg" id="mode">
+                                                <option>Select transport mode</option>
+                                                <option> Land </option>
+                                                <option> Sea </option>
+                                                <option> Air </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="cyn" class="col col-form-label">Currency</label>
+                                        <div class="btn-group col">
+                                            <select class="form-control form-control-lg" id="cyn">
+                                                <option>Select currency</option>
+                                                <!-- load currency data -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="inco_term" class="col col-form-label">INCO Term</label>
+                                        <div class="btn-group col">
+                                            <select class="form-control form-control-lg" id="inco_term">
+                                                <option>Select EXW/CIF/FOB</option>
+                                                <option>EXW</option>
+                                                <option>CIF</option>
+                                                <option>FOB</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="exw-select" class="col-sm-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <label for="originCharges" class="col col-form-label">Origin
+                                                    Charges</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="originCharges" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="originFreight" class="col col-form-label">Origin
+                                                    Freight</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="originFreight" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="exwIntFreight" class="col col-form-label">International
+                                                    Freight</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="exwIntFreight" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="exwInsuranceCharges" class="col col-form-label">Insurance
+                                                    Charges</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="exwInsuranceCharges" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="cif-select" class="col-sm-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <label for="cifIntFreight" class="col col-form-label">International
+                                                    Freight</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="cifIntFreight" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="cifInsuranceCharges" class="col col-form-label">Insurance
+                                                    Charges</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="cifInsuranceCharges" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="fob-select" class="col-sm-6">
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <label for="fobIntFreight" class="col col-form-label">International
+                                                    Freight</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="fobIntFreight" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="fobInsuranceCharges" class="col col-form-label">Insurance
+                                                    Charges</label>
+                                                <div class="btn-group  col">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                        id="fobInsuranceCharges" placeholder="Numbers only" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="productValue" class="col col-form-label">Value of
+                                            Products</label>
+                                        <div class="btn-group col">
+                                            <input type="text" class="form-control form-control-lg" id="productValue"
+                                                placeholder="Numbers only" />
+                                        </div>
+                                    </div>
+                                    <div id="user_input" class="row user-inputs">
+                                        <!-- load user inputs here -->
+                                    </div>
+
+                                    <button id="formsubmit" type="button"
+                                        class="btn btn-outline-primary btn-icon-text btn-center-align">
+                                        <i class="mdi mdi-file-check btn-icon-prepend"
+                                            onclick="getSavedDuty(event)"></i>
+                                        Calculate duty
+                                    </button>
+                                </form>
+
+                                <div class="row-msg" id="toggleDuty">
+                                    <ul>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="collapse" href="#getduty"
+                                                aria-expanded="false" aria-controls="getduty">
+                                                <span class="menu-title">Get Duty Details</span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                            <div class="collapse" id="getduty">
+                                                <div class="row-msg">
+                                                    <table class="duty-details" id="getdutyDetails">
+                                                        <!-- get duty details -->
+                                                    </table>
+                                                </div>
+                                                <div class="row-msg">
+                                                    <div id="message">
+                                                        <!-- API error message here -->
+                                                    </div>
+                                                </div>
+                                                <div class="shipment-summary" id="getdutySummary">
+                                                    <div class="">
+                                                        <h3>YOUR SHIPMENT SUMMARY</h3>
+                                                        <div> Import Country: <span id="import_name_summary"></span>
+                                                        </div>
+                                                        <div> Export Country: <span id="export_name_summary"></span>
+                                                        </div>
+                                                        <div> Mode of Transport: <span
+                                                                id="transport_mode_summary"></span>
+                                                        </div>
+                                                        <div> Import HS Code: <span id="hscode_val_summary"></span>
+                                                        </div>
+                                                        <div> Description: <span id="hscode_desc_summary"></span></div>
+                                                        <div> Currency: <span id="currecny_summary"></span></div>
+                                                        <div> CIF Value: <span id="cif_val_summary"></span></div>
+                                                        <div> Total Duty: <span id="total_duty_summary"></span></div>
+                                                        <div> Total landed cost : <span id="total_cost_summary"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="collapse" href="#fta" aria-expanded="false"
+                                                aria-controls="fta">
+                                                <span class="menu-title">Saved Duty Details</span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                            <div class="collapse" id="fta">
+                                                <div class="row-msg">
+                                                    <div id="savedutyDetails"></div>
+                                                    <!-- show FTA details -->
+                                                </div>
+
+                                                <div class="shipment-summary" id="summary">
+                                                    <!-- load summary data  -->
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        const el = document.getElementById('inco_term');
+                        const exw = document.getElementById('exw-select');
+                        const cif = document.getElementById('cif-select');
+                        const fob = document.getElementById('fob-select');
+
+                        el.addEventListener('change', function handleChange(event) {
+                            if (event.target.value === 'EXW') {
+                                exw.style.visibility = 'visible';
+                                exw.style.display = 'block';
+                                cif.style.visibility = fob.style.visibility = 'hidden';
+                                cif.style.display = fob.style.display = 'none';
+                            } else if (event.target.value === 'CIF') {
+                                cif.style.visibility = 'visible';
+                                cif.style.display = 'block';
+                                exw.style.visibility = fob.style.visibility = 'hidden';
+                                exw.style.display = fob.style.display = 'none';
+                            } else if (event.target.value === 'FOB') {
+                                fob.style.visibility = 'visible';
+                                fob.style.display = 'block';
+                                cif.style.visibility = exw.style.visibility = 'hidden';
+                                cif.style.display = exw.style.display = 'none';
+                            }
+                            else {
+                                fob.style.visibility = cif.style.visibility = exw.style.visibility = 'hidden';
+                                fob.style.display = cif.style.display = exw.style.display = 'none';
+                            }
+                        });
+
+                        document.getElementById("formsubmit").onclick = function () { getSavedDuty(event) };
+
+                    </script>
+
+                </div>
+                <!-- Duty calculator form ends -->
+
+
+            </div>
+            <!-- page-body-wrapper ends -->
+        </div>
+    </div>
+    <!-- container-scroller -->
+
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="vendors/chart.js/Chart.min.js"></script>
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="js/off-canvas.js"></script>
+    <script src="js/hoverable-collapse.js"></script>
+    <script src="js/template.js"></script>
+    <!-- endinject -->
+    <!-- plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- Custom js for this page-->
+    <script src="js/dashboard.js"></script>
+    <!-- End custom js for this page-->
+</body>
+
+</html>
