@@ -1,5 +1,5 @@
 let urlInputResponse, currencyResponse, countryListResponse, cyn, impCurrency;
-let hsDetailsResponse, impcountryHSResponse, expcountryHSResponse;
+let hsDetailsResponse, impcountryHSResponse, expcountryHSResponse, rulesResponse;
 let getDutyResponse = saveDutyResponse = {}, inputData = other_params = {}, showSaveDutyDetails = "";
 let importCountrySummary = exportCountrySummary = transportModeSummary = hscodeSummary = hscodeDescSummary = currencyDescSummary = null;
 let cifValSummary = totalDutySummary = totalCostSummary = null;
@@ -159,6 +159,49 @@ function currencyConvert(val) {
     return total && total.toFixed(2) || 0;
 }
 
+function displayOriginRules() {
+    let rulesHTML = document.getElementById("rules");
+    let string = "";
+    if(rulesResponse.length) {
+        string = "<div><h3>Rules Of Origin </h3>";
+        rulesResponse.forEach(r => {
+            if(r.label.toLowerCase() != 'not applicable') {
+                string += `<p><span class="rules-label"> ${r.label} : </span> ${r.value}</p>`;
+            }
+        });
+        string += "</div>";
+    }
+    rulesHTML.innerHTML = string;
+}
+
+function getRulesOfOrigin() {
+    try {
+        let importCountry = inputData.import_country,
+            exportCountry = inputData.export_country,
+            hs = inputData.hscode;
+        const rulesOfOriginUrl = `${hostname}/api/country/rules?hs=${hs}&imp=${importCountry}&exp=${exportCountry}`;
+
+        fetch(rulesOfOriginUrl)
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Could not reach the origin rules API: " + response.statusText);
+                }
+            }).then(function (data) {
+                rulesResponse = data;
+                console.log("data ---> ", rulesResponse);
+                rulesResponse && displayOriginRules();
+            }).catch(function (error) {
+                console.log("Error occurred in origin rules api", error);
+            });
+
+    }
+    catch (e) {
+        console.log("Error in origin rules API => ", e);
+    }
+}
+
 function displayGetDuty() {
     var string = "<div>";
     cyn = cyn || getDutyResponse.cyn || "INR";
@@ -170,6 +213,7 @@ function displayGetDuty() {
             impCurrency = c.currency;
         }
     });
+    getRulesOfOrigin();
 
     string += "<h3>Landed cost: " + getdutyTotal + " " + impCurrency + " ( " + cynConvertDutyTotal + " " + cyn + ")</h3></div>";
     string += "<div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div> </div>";
