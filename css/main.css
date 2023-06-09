@@ -135,3 +135,11 @@ input[type="text"]::-ms-input-placeholder {
 .rules-label {
   font-weight: 600;
 }
+
+.thumbs-up-icon {
+  margin-right: 8px;
+}
+
+.row-msg {
+  padding:0 10px 30px
+}

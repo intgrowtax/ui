@@ -162,10 +162,10 @@ function currencyConvert(val) {
 function displayOriginRules() {
     let rulesHTML = document.getElementById("rules");
     let string = "";
-    if(rulesResponse.length) {
+    if (rulesResponse.length) {
         string = "<div><h3>Rules Of Origin </h3>";
         rulesResponse.forEach(r => {
-            if(r.label.toLowerCase() != 'not applicable') {
+            if (r && r.label && r.label.toLowerCase() != 'not applicable') {
                 string += `<p><span class="rules-label"> ${r.label} : </span> ${r.value}</p>`;
             }
         });
@@ -190,7 +190,6 @@ function getRulesOfOrigin() {
                 }
             }).then(function (data) {
                 rulesResponse = data;
-                console.log("data ---> ", rulesResponse);
                 rulesResponse && displayOriginRules();
             }).catch(function (error) {
                 console.log("Error occurred in origin rules api", error);
@@ -372,7 +371,7 @@ function displaySaveDuty() {
     const showSummary = document.getElementById("summary");
     showSaveDutyDetails = document.getElementById("savedutyDetails");
     showSaveDutyDetails.innerHTML = " ";
-    let entry = "", savedDutyDetails = [];
+    let entry = "", savedDutyDetails = [], ftaRule = "";
     const getDutyTotal = getDutyResponse && (getDutyResponse.CIFVALUE + getDutyResponse.total);
     let importCountry = inputData.import_country,
         exportCountry = inputData.export_country;
@@ -388,9 +387,10 @@ function displaySaveDuty() {
                 getKey = getKey && getKey[0];
                 if (getKey) {
                     var prefix = getKey.split("_dd")[0];
-                    var _dd = ele[`${prefix}_dd`] || 0,
+                    var _dd = ele[`${prefix}_dd`],
                         _d = ele[`${prefix}_d`] || 0,
                         _cl = ele[`${prefix}_cl`] || 0;
+                    ftaRule = !ftaRule ? _dd : ftaRule;
                     entry += `<tr><td>${_dd}</td>`;
                     entry += `<td>${_d}</td>`;
                     entry += `<td>${_cl.toFixed(2)}</td>`;
@@ -410,9 +410,12 @@ function displaySaveDuty() {
         }
 
         var string = "<div>";
+        let savedAmt = "Congratulation you have saved " + (total - getDutyTotal).toFixed(2) + " " + impCurrency + " in above transaction if imported under " + ftaRule;
         string += "<h3>Landed cost: " + total + " " + impCurrency + " ( " + cynConvertTotal + " " + cyn + ")</h3></div>";
-        string += "<div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>"
+        string += "<div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>";
+        string += `<div><img class="thumbs-up-icon" src="images/thumbs-up.png" alt="success">${savedAmt}</div>`;
         showSaveDutyDetails.innerHTML += string;
+        ftaRule ="";
 
     });
     importCountrySummary.innerHTML = getCountryId(importCountry, "label");
@@ -483,27 +486,30 @@ async function getSavedDuty(event) {
 
 function displayHSCodes(ele) {
     let hsArray = [], hsDataList = "", unique = [];
-    if (ele.match(/^[0-9]+$/g)) {
-        hsDetailsResponse.forEach(d => {
-            let regEx = new RegExp("^(" + ele + ").*", "g");
-            let key = Object.keys(d).filter(val => d[val].match(regEx));
-            if (key) {
-                key.forEach(entry => {
-                    hsArray.push(d[entry]);
-                });
-                unique = [...new Set(hsArray)];
-            }
-        });
-    }
-    else {
-        unique.push(hsDetailsResponse[0].hs2_des);
-        unique.push(hsDetailsResponse[0].hs4_des);
-        hsDetailsResponse.forEach(d => {
-            unique.push(d.hs6_des);
-        });
-    }
-    unique && unique.forEach(v => {
-        hsDataList += `<option>${v}</option>`;
+    // if (ele.match(/^[0-9]+$/g)) {
+    //     unique = hsArray = [];
+    //     hsDetailsResponse.forEach(d => {
+    //         let regEx = new RegExp("^(" + ele + ").*", "g");
+    //         let key = Object.keys(d).filter(val => d[val].match(regEx));
+    //         if (key) {
+    //             key.forEach(entry => {
+    //                 hsArray.push(d[entry]);
+    //             });
+    //         }
+    //     });
+    // }
+    // else {
+    //     unique = hsArray = [];
+    //     hsArray.push(hsDetailsResponse[0].hs2);
+    //     hsDetailsResponse.forEach(d => {
+    //         hsArray.push(d.hs6);
+    //         hsArray.push(d.hs4);
+    //     });
+    // }
+    // unique = [...new Set(hsArray)];
+    // console.log("---unique => ", unique);
+    hsDetailsResponse && hsDetailsResponse.forEach(h => {
+        hsDataList += `<option>${h.hs6}</option>`;
     });
 
     document.getElementById("hscodeList").innerHTML = hsDataList;
@@ -551,24 +557,11 @@ function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, expor
         hscodeHTML += `<div class="hstable-title"> <h4>HS Codes for ${getCountryId(exportCountry, "label")} </h4></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HS Code </th> <th> Product Description </th> </tr>`
         expHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td></tr>`;
+            hscodeHTML += `<tr> <td> <button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${d.value},"${exportCountry}","${importCountry}")> ${d.value}</button> </td> <td> ${d.label} </td></tr>`;
         });
         hscodeHTML += "</table>";
     }
     hscodesDisplay.innerHTML = hscodeHTML;
-}
-
-function getHSCodeFromDes(hscode) {
-    let key = "";
-    const obj = hsDetailsResponse.filter(x => {
-        let index = getKeyByValue(x, hscode);
-        if (index) {
-            key = index;
-            return x;
-        }
-    });
-    key = key && key.split("_")[0];
-    return obj && obj[0][key];
 }
 
 async function loadHsCodes(event) {
@@ -584,7 +577,7 @@ async function loadHsCodes(event) {
     hscodesDisplay.innerHTML = "Loading data...";
     importCountry = importCountry && getCountryId(importCountry);
     exportCountry = exportCountry && getCountryId(exportCountry);
-    hscode = hscode.match(/[a-zA-Z]+/g) ? getHSCodeFromDes(hscode) : hscode;
+    hscode = hscode.split(" ")[0];
 
     const countryHSUrl = `${hostname}/api/getProductFromCountryCode?hs=${hscode}&imp=`;
     const impUrl = countryHSUrl + importCountry;

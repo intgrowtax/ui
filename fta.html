@@ -87,34 +87,34 @@
                             <div class="card-body">
                                 <form class="forms-sample row" onsubmit="return getSavedDuty()" id="myForm">
                                     <div class="form-group col-sm-6">
-                                        <label for="tradeFlow" class="col  col-form-label">Select Trade Flow</label>
+                                        <label for="tradeFlow" class="col  col-form-label">Trade Flow</label>
                                         <div class="btn-group col">
                                             <select class="form-control form-control-lg" id="tradeFlow">
-                                                <option>Choose your trade flow</option>
-                                                <option>Importer</option>
-                                                <option>Exporter</option>
+                                                <option>Select trade flow</option>
+                                                <option>I am Importer</option>
+                                                <option>I am Exporter</option>
                                             </select>
 
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
-                                        <label for="import_country" class="col col-form-label">Select Import
+                                        <label for="import_country" class="col col-form-label">Importing
                                             Country</label>
                                         <div class="btn-group col">
                                             <input class="form-control form-control-lg" id="import_country"
                                                 list="import_countryList" onchange="loadData()"
-                                                placeholder="Import from...">
+                                                placeholder="Select country">
                                             <datalist id="import_countryList">
                                                 <!-- insert country dropdown -->
                                             </datalist>
                                         </div>
                                     </div>
                                     <div class="form-group col-sm-6">
-                                        <label for="export_country" class="col col-form-label">Select Export
+                                        <label for="export_country" class="col col-form-label">Exporting
                                             Country</label>
                                         <div class="btn-group col">
                                             <input class="form-control form-control-lg" id="export_country"
-                                                list="export_countryList" placeholder="Export to...">
+                                                list="export_countryList" placeholder="Select country">
                                             <datalist id="export_countryList">
                                                 <!-- insert country dropdown -->
                                             </datalist>
@@ -151,7 +151,7 @@
                                         <label for="inco_term" class="col col-form-label">INCO Term</label>
                                         <div class="btn-group col">
                                             <select class="form-control form-control-lg" id="inco_term">
-                                                <option>Select EXW/CIF/FOB</option>
+                                                <option>Select Incoterm</option>
                                                 <option>EXW</option>
                                                 <option>CIF</option>
                                                 <option>FOB</option>
