@@ -203,7 +203,7 @@ function getRulesOfOrigin() {
 
 function displayGetDuty() {
     var string = "<div>";
-    cyn = cyn || getDutyResponse.cyn || "INR";
+    cyn = getDutyResponse.cyn || cyn || "INR";
     let getdutyTotal = (getDutyResponse.total + getDutyResponse.CIFVALUE).toFixed(2);
     let cynConvertDutyTotal = currencyConvert(getdutyTotal);
 
@@ -214,8 +214,9 @@ function displayGetDuty() {
     });
     getRulesOfOrigin();
 
-    string += "<h3>Landed cost: " + getdutyTotal + " " + impCurrency + " ( " + cynConvertDutyTotal + " " + cyn + ")</h3></div>";
-    string += "<div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div> </div>";
+    string += "<h3>Landed cost: " + getdutyTotal + " " + impCurrency;
+    string += impCurrency != cyn ? ` ( ${cynConvertDutyTotal} ${cyn} )</h3>` : "";
+    string += "</div><div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div> </div>";
     document.getElementById("message").innerHTML = string;
 
     const showGetDutyDetails = document.getElementById("getdutyDetails");
@@ -230,7 +231,9 @@ function displayGetDuty() {
 
     const dutyDetailsDesc = getDutyResponse && getDutyResponse.dutyDetails || [];
     if (dutyDetailsDesc.length > 0) {
-        var line = `<tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th><th>Duty Amount(in ${cyn})</th></tr>`;
+        var line = `<tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th>`;
+        line += impCurrency != cyn ? `<th>Duty Amount(in ${cyn})</th>` : "";
+        line += "</tr>";
         showGetDutyDetails.innerHTML = line;
         dutyDetailsDesc.forEach(ele => {
             var getKey = Object.keys(ele).filter(e => e.match(/(_dd)$/))[0];
@@ -238,11 +241,14 @@ function displayGetDuty() {
             var entry = `<tr><td>${ele[`${prefix}_dd`]}</td>`;
             entry += `<td>${ele[`${prefix}_d`]}</td>`;
             entry += `<td>${ele[`${prefix}_cl`] && ele[`${prefix}_cl`].toFixed(2) || 0}</td>`;
-            entry += `<td>${ele[`${prefix}_cl`] && currencyConvert(ele[`${prefix}_cl`] || 0)}</td>`;
+            entry += impCurrency != cyn ? `<td>${ele[`${prefix}_cl`] && currencyConvert(ele[`${prefix}_cl`] || 0)}</td>` : "";
             showGetDutyDetails.innerHTML += entry;
         });
         totalDuty = currencyConvert(getDutyResponse.total);
-        showGetDutyDetails.innerHTML += `<tr><td colspan="2">Total Duty</td><td> ${getDutyResponse.total.toFixed(2)} </td> <td> ${totalDuty} </td></tr>`;
+        let totalCol = `<tr><td colspan="2">Total Duty</td><td> ${getDutyResponse.total.toFixed(2)} </td>`;
+        totalCol += impCurrency != cyn ? `<td> ${totalDuty} </td>` : "";
+        totalCol += "</tr>";
+        showGetDutyDetails.innerHTML += totalCol;
     }
 
     importCountrySummary.innerHTML = getCountryId(importCountry, "label");
@@ -252,7 +258,7 @@ function displayGetDuty() {
     hscodeDescSummary.innerHTML = getDutyResponse.des || "";
     currencyDescSummary.innerHTML = cyn;
     cifValSummary.innerHTML = getDutyResponse.CIFVALUE || inputData.CIFVALUE;
-    totalDutySummary.innerHTML = totalDuty;
+    totalDutySummary.innerHTML = totalDuty + " " + cyn;
     totalCostSummary.innerHTML = getdutyTotal + " " + cyn;
 
     showGetDutyDetails.style.visibility = showGetDutySummary.style.visibility = "visible";
@@ -380,7 +386,9 @@ function displaySaveDuty() {
         var total = (duty[0].total + duty[0].CIFVALUE).toFixed(2);
         let cynConvertTotal = currencyConvert(total);
         if (dutyDetailsDesc.length > 0) {
-            var line = `<table class='duty-details'><tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th><th>Duty Amount(in ${cyn})</th></tr>`;
+            var line = `<table class='duty-details'><tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th>`;
+            line += impCurrency != cyn ? `<th>Duty Amount(in ${cyn})</th>`: "";
+            line += "</tr>";
             entry = "", dutyCodes = [];
             dutyDetailsDesc.forEach(ele => {
                 var getKey = Object.keys(ele).filter(e => e.match(/(_dd)$/))[0].match(/(^((?!mfn).)*$)/);
@@ -394,7 +402,7 @@ function displaySaveDuty() {
                     entry += `<tr><td>${_dd}</td>`;
                     entry += `<td>${_d}</td>`;
                     entry += `<td>${_cl.toFixed(2)}</td>`;
-                    entry += `<td>${currencyConvert(_cl)}</td>`;
+                    entry += impCurrency != cyn ? `<td>${currencyConvert(_cl)}</td>` : "";
                     dutyCodes.push(ele[getKey]);
                 }
             });
@@ -405,17 +413,20 @@ function displaySaveDuty() {
                 code: duty[0].dutyDetails[1][key]
             });
             let dutyTotal = duty[0].total ? (duty[0].total).toFixed(2) : 0;
-            let totalPrecision = currencyConvert(dutyTotal);
-            showSaveDutyDetails.innerHTML += line + entry + `<tr><td colspan="2">Total Duty</td> <td> ${dutyTotal} </td><td> ${totalPrecision} </td></tr></table>`;
+            let totalPrecision = impCurrency != cyn && currencyConvert(dutyTotal);
+            let htmlText = line + entry + `<tr><td colspan="2">Total Duty</td><td> ${dutyTotal} </td>`;
+            htmlText += impCurrency != cyn ? `<td> ${totalPrecision} </td>`: "";
+            showSaveDutyDetails.innerHTML += `${htmlText} </tr></table>`;
         }
 
         var string = "<div>";
         let savedAmt = "Congratulation you have saved " + (total - getDutyTotal).toFixed(2) + " " + impCurrency + " in above transaction if imported under " + ftaRule;
-        string += "<h3>Landed cost: " + total + " " + impCurrency + " ( " + cynConvertTotal + " " + cyn + ")</h3></div>";
-        string += "<div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>";
+        string += "<h3>Landed cost: " + total + " " + impCurrency;
+        string += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )</h3>`: "";
+        string += "</div><div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>";
         string += `<div><img class="thumbs-up-icon" src="images/thumbs-up.png" alt="success">${savedAmt}</div>`;
         showSaveDutyDetails.innerHTML += string;
-        ftaRule ="";
+        ftaRule = "";
 
     });
     importCountrySummary.innerHTML = getCountryId(importCountry, "label");
@@ -437,8 +448,9 @@ function displaySaveDuty() {
     savedDutyDetails && savedDutyDetails.forEach(block => {
         let dutyTotal = block.total + saveDutyResponse[0][0].CIFVALUE;
         let cynConvertTotal = currencyConvert(dutyTotal);
-        details += "<li><div>Total landed cost: " + dutyTotal + " " + impCurrency + " ( " + cynConvertTotal + " " + cyn + ")</div>";
-        details += "<div>Duty Saved: " + currencyConvert(getDutyTotal - dutyTotal) + " " + cyn + " (" + block.code + ")</div></li>"
+        details += "<li><div>Total landed cost: " + dutyTotal + " " + impCurrency;
+        details += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )`: "";
+        details += "</div><div>Duty Saved: " + currencyConvert(getDutyTotal - dutyTotal) + " " + cyn + " (" + block.code + ")</div></li>"
     });
     details += "</ol>";
     showSummary.innerHTML = summaryBlock + details;
@@ -541,26 +553,29 @@ function storeHSValue(element, importCountry, exportCountry) {
 }
 
 function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry) {
-    let hscodeHTML = "";
-    if (impHSMap || expHSMap) {
-        hscodeHTML += `<div class="hstable-note">*Note: Click on HS Code to know tariff.</div>`
-    }
+    let hscodeHTML = "",imp_hsn, exp_hsn;
     if (impHSMap && impHSMap.length) {
-        hscodeHTML += `<div class="hstable-title"> <h4>HS Codes for ${getCountryId(importCountry, "label")} </h4></div>`;
-        hscodeHTML += `<table class="hstable-data"><tr> <th> HS Code </th> <th> Product Description </th> </tr>`
+        hscodeHTML = "<div class='col-sm-6 hstable'>";
+        hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(importCountry, "label")} </span></div>`;
+        hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         impHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> <button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${d.value},"${importCountry}","${exportCountry}")> ${d.value}</button> </td> <td> ${d.label} </td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value}</button> </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode"></td></tr>`;
         });
-        hscodeHTML += "</table>";
+        hscodeHTML += "</table></div></div>";
+        imp_hsn = document.getElementById('imp_hscode');
     }
     if (expHSMap && expHSMap.length) {
-        hscodeHTML += `<div class="hstable-title"> <h4>HS Codes for ${getCountryId(exportCountry, "label")} </h4></div>`;
-        hscodeHTML += `<table class="hstable-data"><tr> <th> HS Code </th> <th> Product Description </th> </tr>`
+        hscodeHTML += "<div class='col-sm-6 hstable'>";
+        hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(exportCountry, "label")} </span></div>`;
+        hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         expHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> <button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${d.value},"${exportCountry}","${importCountry}")> ${d.value}</button> </td> <td> ${d.label} </td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value}</button> </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="expHSCode" id="exp_hscode"></td></tr>`;
         });
-        hscodeHTML += "</table>";
+        hscodeHTML += "</table></div></div>";
+        exp_hsn = document.getElementById('exp_hscode');
     }
+    hscodeHTML += `<button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${imp_hsn},"${importCountry}","${exportCountry}")> Proceed to Import Duty Calculator`;
+    // <button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${d.value},"${importCountry}","${exportCountry}")>
     hscodesDisplay.innerHTML = hscodeHTML;
 }
 

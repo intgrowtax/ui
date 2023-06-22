@@ -37,7 +37,7 @@ td {
 }
 
 .main {
-  background-color: #f1faee;
+  background-color: #fff;
 }
 
 .header-bar {
@@ -46,15 +46,16 @@ td {
 
 .logo-img {
   width: 200px;
+  height: 60px;
 }
 
 .sidebar {
-  border: 10px solid #a8dadc;
-  background: #f1faee;
+  border: 1px solid #0e588d;
+  background: #0e588d;
 }
 
 .sidebar .nav .nav-item.active>.nav-link {
-  background: #457b9d;
+  background: none;
 }
 
 .sidebar .nav:not(.sub-menu)>.nav-item:hover>.nav-link,
@@ -62,9 +63,9 @@ td {
   background: #54a4d7;
 }
 
-.navbar {
-  height: 100px;
-  background-color: #a8dadc;
+.navbar .navbar-menu-wrapper {
+  background-color: #0e588d;
+  border-radius: 14px;
 }
 
 .navbar-brand-wrapper {
@@ -78,7 +79,7 @@ btn-outline-primary {
 }
 
 .btn-center-align {
-  width: 40%;
+  width: 30%;
 }
 
 .form-group {
@@ -89,12 +90,47 @@ btn-outline-primary {
   padding-left: 15px;
 }
 
+.hstable-body {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  border-collapse: collapse;
+  padding: 0 20px 20px;
+}
+
+/* table tr:last-child td:first-child {
+  border: solid 0.5px #272d44;
+  border-bottom-left-radius: 10px;
+}
+  
+table tr:last-child td:last-child {
+  border: solid 0.5px #272d44;
+  border-bottom-right-radius: 10px;
+} */
+
 .hstable-title {
-  margin-bottom: 20px
+  padding: 12px 0;
+  text-align: center;
+  font-size: 16px;
 }
 
 .hstable-data {
-  margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 2px 0 #0e588d;
+  border-style: hidden;
+  font-size: 14px;
+  width: 100%;
+}
+
+.hstable-data th {
+  border: solid 0.5px #dbd1d1;
+  text-align: center;
+  background-color: #0e588d;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.hstable-data td {
+  border: solid 0.5px #dbd1d1;
 }
 
 input[type="text"]::placeholder {
@@ -142,4 +178,39 @@ input[type="text"]::-ms-input-placeholder {
 
 .row-msg {
   padding:0 10px 30px
+}
+
+.form-control-lg {
+  border-radius: 30px;
+  border: solid 1px #b6c4d3;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.stretch-card>.card {
+  padding: 0 50px;
+}
+
+.btn {
+  margin: 20px auto;
+  border-radius: 9px;
+  background-color: rgba(14, 88, 141, 0.97);
+  color: #fff;
+}
+
+h3 {
+  margin-bottom: 0;
+}
+
+header {
+  height: 100px;
+}
+
+.footer {
+  background-color: #0e588d;
+  padding: 10px;
+}
+
+.card .footer-text {
+  padding: 0;
+  color: #fff;
 }
