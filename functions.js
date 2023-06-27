@@ -3,6 +3,7 @@ let hsDetailsResponse, impcountryHSResponse, expcountryHSResponse, rulesResponse
 let getDutyResponse = saveDutyResponse = {}, inputData = other_params = {}, showSaveDutyDetails = "";
 let importCountrySummary = exportCountrySummary = transportModeSummary = hscodeSummary = hscodeDescSummary = currencyDescSummary = null;
 let cifValSummary = totalDutySummary = totalCostSummary = null;
+// const hostname = "http://localhost:5555";
 const hostname = "https://dutycalculator.cyclic.app";
 const getDutyUrl = `${hostname}/api/dutyCalculator/getDuty`;
 const saveDutyUrl = `${hostname}/api/dutyCalculator/getFTA`;
@@ -555,7 +556,7 @@ function storeHSValue(element, importCountry, exportCountry) {
 function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry) {
     let hscodeHTML = "",imp_hsn, exp_hsn;
     if (impHSMap && impHSMap.length) {
-        hscodeHTML = "<div class='col-sm-6 hstable'>";
+        hscodeHTML = "<div class='row hstable-row'><div class='col-sm-6 hstable'>";
         hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(importCountry, "label")} </span></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         impHSMap.forEach(d => {
@@ -574,9 +575,18 @@ function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, expor
         hscodeHTML += "</table></div></div>";
         exp_hsn = document.getElementById('exp_hscode');
     }
-    hscodeHTML += `<button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${imp_hsn},"${importCountry}","${exportCountry}")> Proceed to Import Duty Calculator`;
+    hscodeHTML += `<button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${imp_hsn},"${importCountry}","${exportCountry}")> Proceed to Import Duty Calculator</button></div>`;
     // <button class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${d.value},"${importCountry}","${exportCountry}")>
-    hscodesDisplay.innerHTML = hscodeHTML;
+    hscodesDisplay.innerHTML += hscodeHTML;
+}
+
+function editHSField(event) {
+    event.preventDefault();
+    let hscodesDisplay = document.getElementById('show_hscodes'),
+        hscodeForm = document.getElementById('hscode_form');
+    hscodesDisplay.innerHTML = '';
+    hscodeForm.style.visibility = 'visible';
+    hscodeForm.style.display = 'flex';
 }
 
 async function loadHsCodes(event) {
@@ -587,9 +597,18 @@ async function loadHsCodes(event) {
     let hscodesDisplay = document.getElementById("show_hscodes"),
         importCountry = document.getElementById("import_country").value,
         exportCountry = document.getElementById("export_country").value,
+        hscodeForm = document.getElementById('hscode_form'),
         hscode = document.getElementById("hscode").value;
+    hscodeForm.style.visibility = 'hidden';
+    hscodeForm.style.display = 'none';
     countryHSResponse = [];
-    hscodesDisplay.innerHTML = "Loading data...";
+
+    let formDetails = "";
+    formDetails += `<div class='row hstable-form'><div class='col-sm-4'><span class='col-hs col-form-label'>Product Name/HS Code</span><input type='text' class='form-control form-control-lg' value='${hscode}'></div>`;
+    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Importing Country</span><input type='text' class='form-control form-control-lg' value='${importCountry}'> </div>`;
+    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Exporting Country</span><input type='text' class='form-control form-control-lg' value='${exportCountry}'> </div>`;
+    formDetails += `<div class='col-sm-1'><button class='btn btn-outline-primary btn-icon-text' id='modifyHS' type='button' onclick='editHSField(event)'>Modify</button></div>`
+    hscodesDisplay.innerHTML = formDetails;
     importCountry = importCountry && getCountryId(importCountry);
     exportCountry = exportCountry && getCountryId(exportCountry);
     hscode = hscode.split(" ")[0];

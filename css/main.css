@@ -46,7 +46,7 @@ td {
 
 .logo-img {
   width: 200px;
-  height: 60px;
+  height: 70px;
 }
 
 .sidebar {
@@ -213,4 +213,16 @@ header {
 .card .footer-text {
   padding: 0;
   color: #fff;
+}
+
+.col-hs {
+  font-size: 12px;
+}
+
+.hstable-row {
+  margin: 32px auto;
+}
+
+.hstable-form {
+  margin-left: 0;
 }

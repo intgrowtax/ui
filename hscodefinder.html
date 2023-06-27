@@ -71,60 +71,63 @@
 
         <!-- Duty calculator form -->
         <div>
-          <div class="col-md-12 grid-margin stretch-card">
+          <div class="col-md-12 grid-margin stretch-card" id="hscode_form">
             <div class="card">
               <div class="card-body">
-                <form class="forms-sample row" onsubmit="return loadHsCodes(event)" id="myForm">
-                  <div class="form-group col-sm-6">
-                    <label for="import_country" class=" col col-form-label">Importing
-                      Country</label>
-                    <div class="btn-group col">
-                      <input class="form-control form-control-lg" id="import_country" list="import_countryList"
-                        onchange="loadData(false)" placeholder="Select country">
-                      <datalist id="import_countryList">
-                        <!-- insert country dropdown -->
-                      </datalist>
+                <div class="row">
+                  <form class="forms-sample row" onsubmit="return loadHsCodes(event)" id="myForm">
+                    <div class="form-group col-sm-6">
+                      <label for="import_country" class="col col-form-label">Importing
+                        Country</label>
+                      <div class="btn-group col">
+                        <input class="form-control form-control-lg" id="import_country" list="import_countryList"
+                          onchange="loadData(false)" placeholder="Select country">
+                        <datalist id="import_countryList">
+                          <!-- insert country dropdown -->
+                        </datalist>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="export_country" class=" col col-form-label">Exporting
-                      Country</label>
-                    <div class="btn-group  col">
-                      <input class="form-control form-control-lg" id="export_country" list="export_countryList"
-                        placeholder="Select country">
-                      <datalist id="export_countryList">
-                        <!-- insert country dropdown -->
-                      </datalist>
+                    <div class="form-group col-sm-6">
+                      <label for="export_country" class="col col-form-label">Exporting
+                        Country</label>
+                      <div class="btn-group col">
+                        <input class="form-control form-control-lg" id="export_country" list="export_countryList"
+                          placeholder="Select country">
+                        <datalist id="export_countryList">
+                          <!-- insert country dropdown -->
+                        </datalist>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group col-sm-12">
-                    <label for="hscode" class=" col col-form-label">Product Name/HS Code</label>
-                    <div class="col">
-                      <input type="text" class="form-control form-control-lg" id="hscode" list="hscodeList"
-                        placeholder="Enter product name or HS code here..." aria-label="search"
-                        aria-describedby="search" onkeyup="findHSCode()">
-                      <datalist id="hscodeList">
-                        <!-- load hscodes here -->
-                      </datalist>
+                    <div class="form-group col-sm-12">
+                      <label for="hscode" class="col col-form-label">Product Name/HS Code</label>
+                      <div class="col">
+                        <input type="text" class="form-control form-control-lg" id="hscode" list="hscodeList"
+                          placeholder="Enter product name or HS code here..." aria-label="search"
+                          aria-describedby="search" onkeyup="findHSCode()">
+                        <datalist id="hscodeList">
+                          <!-- load hscodes here -->
+                        </datalist>
+                      </div>
                     </div>
-                  </div>
-                  <button id="hscodesubmit" type="button"
-                    class="btn btn-outline-primary btn-icon-text btn-center-align row">
-                    <i class="mdi mdi-file-check btn-icon-prepend" onclick="loadHsCodes(event)"></i>
-                    Get Result
-                  </button>
-                </form>
-              </div>
-              <div class="card-body">
-                <div id="show_hscodes" class="row">
-                  <!-- load hscodes -->
+                    <button id="hscodesubmit" type="button"
+                      class="btn btn-outline-primary btn-icon-text btn-center-align row">
+                      <i class="mdi mdi-file-check btn-icon-prepend" onclick="loadHsCodes(event)"></i>
+                      Get Result
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="card-body">
+          <div id="show_hscodes">
+            <!-- load country hscodes -->
+          </div>
+        </div>
       </div>
     </div>
+  </div>
   </div>
 
   <footer class="footer">
@@ -132,7 +135,7 @@
       <div class="card-body footer-text">
         <div class="d-sm-flex justify-content-center">
           <span class="d-block text-center d-sm-inline-block">Copyright © 2023 IntGrow</span>
-          
+
         </div>
       </div>
     </div>
