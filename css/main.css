@@ -95,6 +95,16 @@ btn-outline-primary {
   border-radius: 12px;
   border-collapse: collapse;
   padding: 0 20px 20px;
+  overflow-y: scroll;
+  max-height: 300px;
+}
+
+.hsfree-text-body {
+  border-radius: 12px;
+  border-collapse: collapse;
+  padding: 0 20px 20px;
+  overflow-y: scroll;
+  max-height: 300px;
 }
 
 /* table tr:last-child td:first-child {

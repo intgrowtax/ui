@@ -3,7 +3,6 @@ let hsDetailsResponse, impcountryHSResponse, expcountryHSResponse, rulesResponse
 let getDutyResponse = saveDutyResponse = {}, inputData = other_params = {}, showSaveDutyDetails = "";
 let importCountrySummary = exportCountrySummary = transportModeSummary = hscodeSummary = hscodeDescSummary = currencyDescSummary = null;
 let cifValSummary = totalDutySummary = totalCostSummary = null;
-// const hostname = "http://localhost:5555";
 const hostname = "https://dutycalculator.cyclic.app";
 const getDutyUrl = `${hostname}/api/dutyCalculator/getDuty`;
 const saveDutyUrl = `${hostname}/api/dutyCalculator/getFTA`;
@@ -388,7 +387,7 @@ function displaySaveDuty() {
         let cynConvertTotal = currencyConvert(total);
         if (dutyDetailsDesc.length > 0) {
             var line = `<table class='duty-details'><tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th>`;
-            line += impCurrency != cyn ? `<th>Duty Amount(in ${cyn})</th>`: "";
+            line += impCurrency != cyn ? `<th>Duty Amount(in ${cyn})</th>` : "";
             line += "</tr>";
             entry = "", dutyCodes = [];
             dutyDetailsDesc.forEach(ele => {
@@ -416,14 +415,14 @@ function displaySaveDuty() {
             let dutyTotal = duty[0].total ? (duty[0].total).toFixed(2) : 0;
             let totalPrecision = impCurrency != cyn && currencyConvert(dutyTotal);
             let htmlText = line + entry + `<tr><td colspan="2">Total Duty</td><td> ${dutyTotal} </td>`;
-            htmlText += impCurrency != cyn ? `<td> ${totalPrecision} </td>`: "";
+            htmlText += impCurrency != cyn ? `<td> ${totalPrecision} </td>` : "";
             showSaveDutyDetails.innerHTML += `${htmlText} </tr></table>`;
         }
 
         var string = "<div>";
         let savedAmt = "Congratulation you have saved " + (total - getDutyTotal).toFixed(2) + " " + impCurrency + " in above transaction if imported under " + ftaRule;
         string += "<h3>Landed cost: " + total + " " + impCurrency;
-        string += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )</h3>`: "";
+        string += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )</h3>` : "";
         string += "</div><div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>";
         string += `<div><img class="thumbs-up-icon" src="images/thumbs-up.png" alt="success">${savedAmt}</div>`;
         showSaveDutyDetails.innerHTML += string;
@@ -450,7 +449,7 @@ function displaySaveDuty() {
         let dutyTotal = block.total + saveDutyResponse[0][0].CIFVALUE;
         let cynConvertTotal = currencyConvert(dutyTotal);
         details += "<li><div>Total landed cost: " + dutyTotal + " " + impCurrency;
-        details += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )`: "";
+        details += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )` : "";
         details += "</div><div>Duty Saved: " + currencyConvert(getDutyTotal - dutyTotal) + " " + cyn + " (" + block.code + ")</div></li>"
     });
     details += "</ol>";
@@ -499,28 +498,7 @@ async function getSavedDuty(event) {
 
 function displayHSCodes(ele) {
     let hsArray = [], hsDataList = "", unique = [];
-    // if (ele.match(/^[0-9]+$/g)) {
-    //     unique = hsArray = [];
-    //     hsDetailsResponse.forEach(d => {
-    //         let regEx = new RegExp("^(" + ele + ").*", "g");
-    //         let key = Object.keys(d).filter(val => d[val].match(regEx));
-    //         if (key) {
-    //             key.forEach(entry => {
-    //                 hsArray.push(d[entry]);
-    //             });
-    //         }
-    //     });
-    // }
-    // else {
-    //     unique = hsArray = [];
-    //     hsArray.push(hsDetailsResponse[0].hs2);
-    //     hsDetailsResponse.forEach(d => {
-    //         hsArray.push(d.hs6);
-    //         hsArray.push(d.hs4);
-    //     });
-    // }
-    // unique = [...new Set(hsArray)];
-    // console.log("---unique => ", unique);
+   
     hsDetailsResponse && hsDetailsResponse.forEach(h => {
         hsDataList += `<option>${h.hs6}</option>`;
     });
@@ -528,8 +506,8 @@ function displayHSCodes(ele) {
     document.getElementById("hscodeList").innerHTML = hsDataList;
 }
 
-function findHSCode() {
-    let ele = document.getElementById("hscode").value;
+function findHSCode(ele = '') {
+    ele = document.getElementById("hscode").value;
     if ((ele.match(/^[0-9]+$/g) && ele.length > 1 && ele.length % 2 == 0) || (ele.match(/[a-zA-Z]+/g) && ele.length > 2)) {
         const hsDetailsUrl = `${hostname}/api/hs_code/details?hs=${ele}`;
         fetch(hsDetailsUrl)
@@ -554,13 +532,13 @@ function storeHSValue(element, importCountry, exportCountry) {
 }
 
 function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry) {
-    let hscodeHTML = "",imp_hsn, exp_hsn;
+    let hscodeHTML = "", imp_hsn, exp_hsn;
     if (impHSMap && impHSMap.length) {
         hscodeHTML = "<div class='row hstable-row'><div class='col-sm-6 hstable'>";
         hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(importCountry, "label")} </span></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         impHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> ${d.value}</button> </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode"></td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode"></td></tr>`;
         });
         hscodeHTML += "</table></div></div>";
         imp_hsn = document.getElementById('imp_hscode');
@@ -570,7 +548,7 @@ function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, expor
         hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(exportCountry, "label")} </span></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         expHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> ${d.value}</button> </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="expHSCode" id="exp_hscode"></td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="expHSCode" id="exp_hscode"></td></tr>`;
         });
         hscodeHTML += "</table></div></div>";
         exp_hsn = document.getElementById('exp_hscode');
@@ -589,20 +567,12 @@ function editHSField(event) {
     hscodeForm.style.display = 'flex';
 }
 
-async function loadHsCodes(event) {
-    event.preventDefault();
-    window.localStorage.removeItem("hscode");
-    window.localStorage.removeItem("imp");
-    window.localStorage.removeItem("exp");
-    let hscodesDisplay = document.getElementById("show_hscodes"),
-        importCountry = document.getElementById("import_country").value,
-        exportCountry = document.getElementById("export_country").value,
-        hscodeForm = document.getElementById('hscode_form'),
-        hscode = document.getElementById("hscode").value;
-    hscodeForm.style.visibility = 'hidden';
-    hscodeForm.style.display = 'none';
-    countryHSResponse = [];
-
+async function getCountryHSCode(hscode, importCountry, exportCountry) {
+    let hscodeForm = document.getElementById("hscode_form"),
+        hsFreeTextTable = document.getElementById("hs_freetext_search"),
+        hscodesDisplay = document.getElementById("show_hscodes");
+    hscodeForm.style.visibility = hsFreeTextTable.style.visibility = 'hidden';
+    hscodeForm.style.display = hsFreeTextTable.style.display = 'none';
     let formDetails = "";
     formDetails += `<div class='row hstable-form'><div class='col-sm-4'><span class='col-hs col-form-label'>Product Name/HS Code</span><input type='text' class='form-control form-control-lg' value='${hscode}'></div>`;
     formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Importing Country</span><input type='text' class='form-control form-control-lg' value='${importCountry}'> </div>`;
@@ -633,6 +603,40 @@ async function loadHsCodes(event) {
     const expHSMap = expcountryHSResponse.status != 204 ? await expcountryHSResponse.json() : [];
 
     displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry);
+}
+
+function displayFreeHSSearch(hs_codes, importCountry, exportCountry) {
+    let string = '';
+    let hsFreeTextTable = document.getElementById('hs_freetext_search');
+    string = "<div class='row hstable-row justify-content-center'><div class='col-sm-11 hstable'>";
+    string += `<div class="hsfree-text-body">`;
+    string += `<table class="hstable-data"><tr> <th colspan="2"> HSN </th> </tr>`;
+    hs_codes.forEach(h => {
+        let value = h.hs6.split(" -")[0];
+        string += `<tr> <td> ${h.hs6} </td> <td><input type="radio" value="${value}" onclick='getCountryHSCode("${value}","${importCountry}","${exportCountry}")' name="HSCode" id="hscode_select"></td></tr>`;
+    });
+    string += "</table></div></div></div>";
+    hsFreeTextTable.innerHTML = string;
+    hsFreeTextTable.style.visibility = 'visible';
+    hsFreeTextTable.style.display = 'flex';
+}
+
+async function loadHsCodes(event) {
+    event.preventDefault();
+    window.localStorage.removeItem("hscode");
+    window.localStorage.removeItem("imp");
+    window.localStorage.removeItem("exp");
+    let importCountry = document.getElementById("import_country").value,
+        exportCountry = document.getElementById("export_country").value,
+        hscode = document.getElementById("hscode").value;
+
+    if (hscode && hscode.match(/[a-z]+/g)) {
+        findHSCode(hscode);
+        displayFreeHSSearch(hsDetailsResponse, importCountry, exportCountry);
+    }
+    else {
+        getCountryHSCode(hscode, importCountry, exportCountry);
+    }
 
 }
 
