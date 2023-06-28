@@ -613,7 +613,7 @@ function displayFreeHSSearch(hs_codes, importCountry, exportCountry) {
     string += `<table class="hstable-data"><tr> <th colspan="2"> HSN </th> </tr>`;
     hs_codes.forEach(h => {
         let value = h.hs6.split(" -")[0];
-        string += `<tr> <td> ${h.hs6} </td> <td><input type="radio" value="${value}" onclick='getCountryHSCode("${value}","${importCountry}","${exportCountry}")' name="HSCode" id="hscode_select"></td></tr>`;
+        string += `<tr> <td> ${h.hs6} </td> <td><input type="radio" value="${value}" onclick='getCountryHSCode("${h.hs6}","${importCountry}","${exportCountry}")' name="HSCode" id="hscode_select"></td></tr>`;
     });
     string += "</table></div></div></div>";
     hsFreeTextTable.innerHTML = string;
@@ -630,7 +630,7 @@ async function loadHsCodes(event) {
         exportCountry = document.getElementById("export_country").value,
         hscode = document.getElementById("hscode").value;
 
-    if (hscode && hscode.match(/[a-z]+/g)) {
+    if (hscode && hscode.match(/^([a-zA-Z]+)/g)) {
         findHSCode(hscode);
         displayFreeHSSearch(hsDetailsResponse, importCountry, exportCountry);
     }
