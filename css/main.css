@@ -141,18 +141,15 @@ table tr:last-child td:last-child {
   width: 100%;
 }
 
-th {
-  position: sticky;
-  z-index: 1;
-  top: 0;
-}
-
 .hstable-data th {
   border: solid 0.5px #dbd1d1;
   text-align: center;
   background-color: #0e588d;
   color: #fff;
   border-radius: 6px;
+  position: sticky;
+  z-index: 1;
+  top: 0;
 }
 
 .hstable-data td {
