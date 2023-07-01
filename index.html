@@ -27,7 +27,7 @@
   <div class="main">
     <header>
       <div class="header-bar">
-        <img class="logo-img" src="images/logo1.png" alt="logo" />
+        <img class="logo-img" src="images/logo.png" alt="logo" />
       </div>
     </header>
     <div class="container-scroller d-flex">
@@ -35,21 +35,12 @@
 
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          <li class="nav-item sidebar-category">
-            <p>Dashboard</p>
-          </li>
-          <li class="nav-item nav-item-start">
+
+          <li class="nav-item">
             <a class="nav-link" href="hscodefinder.html">
               <span class="menu-title">HS Code Finder</span>
             </a>
           </li>
-
-          <!-- <li class="nav-item">
-          <a class="nav-link" href="#">
-            <span class="menu-title">Export Price Calculator</span>
-          </a>
-        </li> -->
-
 
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
@@ -70,7 +61,7 @@
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:./partials/_navbar.html -->
-        <nav class="navbar col-lg-12 col-12 px-0 py-0 py-lg-4 d-flex flex-row">
+        <nav class="navbar col-lg-12 col-12 px-0 py-0 d-flex flex-row">
           <div class="navbar-menu-wrapper d-flex align-items-center">
 
             <div class="navbar-brand-wrapper">
@@ -82,194 +73,181 @@
 
         <!-- Duty calculator form -->
         <div>
-          <div class="col-md-10 grid-margin stretch-card">
+          <div class="col-md-12 grid-margin stretch-card" id="getdutyForm">
             <div class="card">
-              <div class="card-body">
+              <div class="">
                 <form class="forms-sample row" onsubmit="return getDuty()" id="myForm">
-                  <div class="form-group col-sm-6">
-                    <label for="tradeFlow" class="col  col-form-label">Trade Flow</label>
-                    <div class="btn-group col">
-                      <select class="form-control form-control-lg" id="tradeFlow">
-                        <option>Select trade flow</option>
-                        <option>I am Importer</option>
-                        <option>I am Exporter</option>
-                      </select>
-                    </div>
-                  </div>
 
-                  <div class="form-group col-sm-6">
-                    <label for="import_country" class="col col-form-label">Importing Country</label>
-                    <div class="btn-group  col">
-                      <input class="form-control form-control-lg" id="import_country" list="import_countryList"
-                        onchange="loadData()" placeholder="Select country">
-                      <datalist id="import_countryList">
-                        <!-- insert country dropdown -->
-                      </datalist>
-                    </div>
+                  <div class="col-sm-12 form-group-heading">
+                    <div class=""> Trade Details</div>
                   </div>
-                  <div class="form-group col-sm-6">
-                    <label for="export_country" class="col col-form-label">Exporting Country</label>
-                    <div class="btn-group  col">
-                      <input class="form-control form-control-lg" id="export_country" list="export_countryList"
-                        placeholder="Select country">
-                      <datalist id="export_countryList">
-                        <!-- insert country dropdown -->
-                      </datalist>
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="hscode" class="col col-form-label">HS code</label>
-                    <div class="btn-group  col">
-                      <input type="text" class="form-control form-control-lg" id="hscode" oninput="getUserInput()"
-                        placeholder="Enter HS Code here" />
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="mode" class="col col-form-label">Mode of Transport</label>
-                    <div class="btn-group  col">
-                      <select class="form-control form-control-lg" id="mode">
-                        <option>Select transport mode</option>
-                        <option> Land </option>
-                        <option> Sea </option>
-                        <option> Air </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="cyn" class="col col-form-label">Currency</label>
-                    <div class="btn-group  col">
-                      <select class="form-control form-control-lg" id="cyn">
-                        <option>Select currency</option>
-                        <!-- load currency data -->
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="inco_term" class="col col-form-label">INCO Term</label>
-                    <div class="btn-group  col">
-                      <select class="form-control form-control-lg" id="inco_term">
-                        <option>Select Incoterm</option>
-                        <option>EXW</option>
-                        <option>CIF</option>
-                        <option>FOB</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div id="exw-select" class="col-sm-6">
-                    <div class="row">
-                      <div class="form-group col-sm-6">
-                        <label for="originCharges" class="col col-form-label">Origin Charges</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="originCharges"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                      <div class="form-group col-sm-6">
-                        <label for="originFreight" class="col col-form-label">Origin Freight</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="originFreight"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                      <div class="form-group col-sm-6">
-                        <label for="exwIntFreight" class="col col-form-label">International Freight</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="exwIntFreight"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                      <div class="form-group col-sm-6">
-                        <label for="exwInsuranceCharges" class="col col-form-label">Insurance Charges</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="exwInsuranceCharges"
-                            placeholder="Numbers only" />
-                        </div>
+                  <div class="row">
+                    <div class="form-group col-sm-3">
+                      <label for="tradeFlow" class="col  col-form-label">I am</label>
+                      <div class="btn-group col form-group-input">
+                        <select class="form-control form-control-lg" id="tradeFlow">
+                          <option>Importer</option>
+                          <option>Exporter</option>
+                        </select>
                       </div>
                     </div>
-                  </div>
-                  <div id="cif-select" class="col-sm-6">
-                    <div class="row">
-                      <div class="form-group col-sm-6">
-                        <label for="cifIntFreight" class="col col-form-label">International Freight</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="cifIntFreight"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                      <div class="form-group col-sm-6">
-                        <label for="cifInsuranceCharges" class="col col-form-label">Insurance Charges</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="cifInsuranceCharges"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="fob-select" class="col-sm-6">
-                    <div class="row">
-                      <div class="form-group col-sm-6">
-                        <label for="fobIntFreight" class="col col-form-label">International Freight</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="fobIntFreight"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                      <div class="form-group col-sm-6">
-                        <label for="fobInsuranceCharges" class="col col-form-label">Insurance Charges</label>
-                        <div class="btn-group  col">
-                          <input type="text" class="form-control form-control-lg" id="fobInsuranceCharges"
-                            placeholder="Numbers only" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-6">
-                    <label for="productValue" class="col col-form-label">Value of Products</label>
-                    <div class="btn-group  col">
-                      <input type="text" class="form-control form-control-lg" id="productValue"
-                        placeholder="Numbers only" />
-                    </div>
-                  </div>
 
-                  <div id="user_input" class="row user-inputs">
+                    <div class="form-group col-sm-4">
+                      <label for="import_country" class="col col-form-label">Importing Country</label>
+                      <div class="btn-group col form-group-input">
+                        <input class="form-control form-control-lg" id="import_country" list="import_countryList"
+                          onchange="loadData()" placeholder="Select country">
+                        <datalist id="import_countryList">
+                          <!-- insert country dropdown -->
+                        </datalist>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                      <label for="export_country" class="col col-form-label">Exporting Country</label>
+                      <div class="btn-group col form-group-input">
+                        <input class="form-control form-control-lg" id="export_country" list="export_countryList"
+                          placeholder="Select country">
+                        <datalist id="export_countryList">
+                          <!-- insert country dropdown -->
+                        </datalist>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-sm-5">
+                      <label for="hscode" class="col col-form-label">HS code</label>
+                      <div class="btn-group col form-group-input">
+                        <input type="text" class="form-control form-control-lg" id="hscode" oninput="getUserInput()"
+                          placeholder="Enter HS Code here" />
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-5">
+                      <label for="productValue" class="col col-form-label">Value of Product</label>
+                      <div class="btn-group col form-group-input">
+                        <input type="text" class="form-control form-control-lg" id="productValue"
+                          placeholder="Numbers only" />
+                      </div>
+                    </div>
+                  </div>
+                  <div id="user_input" class="row">
                     <!-- load user inputs here -->
                   </div>
 
+                  <div class="row">
+                    <div class="form-group col-sm-3">
+                      <label for="inco_term" class="col col-form-label">INCO Term</label>
+                      <div class="btn-group col form-group-input">
+                        <select class="form-control form-control-lg" id="inco_term">
+                          <option>Select Incoterm</option>
+                          <option>EXW</option>
+                          <option>CIF</option>
+                          <option>FOB</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="exw-select" class="col-sm-9">
+                      <div class="row">
+                        <div class="form-group col-sm-3">
+                          <label for="originCharges" class="col col-form-label">Origin Charges</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="originCharges"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                          <label for="originFreight" class="col col-form-label">Origin Freight</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="originFreight"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                          <label for="exwIntFreight" class="col col-form-label">International Freight</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="exwIntFreight"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                          <label for="exwInsuranceCharges" class="col col-form-label">Insurance Charges</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="exwInsuranceCharges"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="cif-select" class="col-sm-9">
+                      <div class="row">
+                        <div class="form-group col-sm-4">
+                          <label for="cifIntFreight" class="col col-form-label">International Freight</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="cifIntFreight"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                          <label for="cifInsuranceCharges" class="col col-form-label">Insurance Charges</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="cifInsuranceCharges"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="fob-select" class="col-sm-9">
+                      <div class="row">
+                        <div class="form-group col-sm-4">
+                          <label for="fobIntFreight" class="col col-form-label">International Freight</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="fobIntFreight"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                          <label for="fobInsuranceCharges" class="col col-form-label">Insurance Charges</label>
+                          <div class="btn-group col form-group-input">
+                            <input type="text" class="form-control form-control-lg" id="fobInsuranceCharges"
+                              placeholder="Numbers only" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                      <label for="cyn" class="col col-form-label">Currency</label>
+                      <div class="btn-group col form-group-input">
+                        <select class="form-control form-control-lg" id="cyn">
+                          <option>Select currency</option>
+                          <!-- load currency data -->
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                      <label for="mode" class="col col-form-label">Mode of Transport</label>
+                      <div class="btn-group col form-group-input">
+                        <select class="form-control form-control-lg" id="mode">
+                          <option>Select transport mode</option>
+                          <option> Land </option>
+                          <option> Sea </option>
+                          <option> Air </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <button id="formsubmit" type="button" class="btn btn-outline-primary btn-icon-text btn-center-align">
                     <i class="mdi mdi-file-check btn-icon-prepend" onclick="getDuty(event)"></i>
                     Calculate duty
                   </button>
                 </form>
-                <div class="row-msg">
-                  <table class="duty-details" id="getdutyDetails">
-                    <!-- get duty details -->
-                  </table>
-                </div>
-                <div class="row-msg">
-                  <div id="message">
-                    <!-- API error message -->
-                  </div>
-                </div>
-                <div class="row-msg">
-                  <div id="rules">
-                    <!--Rules of origin -->
-                  </div>
-                </div>
-                <div class="shipment-summary" id="getdutySummary">
-                  <div class="">
-                    <h3>YOUR SHIPMENT SUMMARY</h3>
-                    <div>Import Country: <span id="import_name_summary"></span></div>
-                    <div>Export Country: <span id="export_name_summary"></span></div>
-                    <div> Mode of Transport: <span id="transport_mode_summary"></span></div>
-                    <div>Import HS Code: <span id="hscode_val_summary"></span></div>
-                    <div> Description: <span id="hscode_desc_summary"></span></div>
-                    <div> Currency: <span id="currecny_summary"></span></div>
-                    <div> CIF Value: <span id="cif_val_summary"></span></div>
-                    <div> Total Duty: <span id="total_duty_summary"></span></div>
-                    <div> Total landed cost : <span id="total_cost_summary"></span></div>
-                  </div>
-                </div>
+
               </div>
+
+            </div>
+          </div>
+          <div class="col-md-12 display-group">
+            <div class="row-msg row" id="getdutyDetails">
+              <!-- get duty details -->
             </div>
           </div>
 
