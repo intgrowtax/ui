@@ -160,7 +160,7 @@ function currencyConvert(val) {
             total = val / c.value;
         }
     });
-    return total && total.toFixed(2) || 0;
+    return total && Math.floor(total) || 0;
 }
 
 function displayOriginRules() {
@@ -208,7 +208,7 @@ function getRulesOfOrigin() {
 function displayGetDuty() {
     // var string = "<div>";
     cyn = cyn || getDutyResponse.cyn || "INR";
-    let getdutyTotal = (getDutyResponse.total + getDutyResponse.CIFVALUE).toFixed(2);
+    let getdutyTotal = Math.floor(getDutyResponse.total + getDutyResponse.CIFVALUE);
     let cynConvertDutyTotal = currencyConvert(getdutyTotal);
     const impCountryLabel = getCountryId(inputData.import_country, "label");
     const expCountryLabel = getCountryId(inputData.export_country, "label");
@@ -250,12 +250,12 @@ function displayGetDuty() {
             var prefix = getKey.split("_dd")[0];
             line += `<tr><td>${ele[`${prefix}_dd`]}</td>`;
             line += `<td>${ele[`${prefix}_d`]}</td>`;
-            line += `<td>${ele[`${prefix}_cl`] && ele[`${prefix}_cl`].toFixed(2) || 0}</td>`;
+            line += `<td>${ele[`${prefix}_cl`] && Math.floor(ele[`${prefix}_cl`]) || 0}</td>`;
             line += impCurrency != cyn ? `<td>${ele[`${prefix}_cl`] && currencyConvert(ele[`${prefix}_cl`] || 0)}</td>` : "";
 
         });
         totalDuty = currencyConvert(getDutyResponse.total);
-        line += `<tr><td colspan="2">Total Duty</td><td> ${getDutyResponse.total.toFixed(2)} </td>`;
+        line += `<tr><td colspan="2">Total Duty</td><td> ${Math.floor(getDutyResponse.total)} </td>`;
         line += impCurrency != cyn ? `<td> ${totalDuty} </td>` : "";
         line += "</tr></table></div>";
     }
@@ -404,7 +404,7 @@ function displaySaveDuty() {
         exportCountry = inputData.export_country;
     saveDutyResponse && saveDutyResponse.length && saveDutyResponse.forEach(duty => {
         var dutyDetailsDesc = duty && duty[0] && duty[0].dutyDetails || [];
-        var total = (duty[0].total + duty[0].CIFVALUE).toFixed(2);
+        var total = Math.floor(duty[0].total + duty[0].CIFVALUE);
         let cynConvertTotal = currencyConvert(total);
         if (dutyDetailsDesc.length > 0) {
             var line = `<table class='duty-details'><tr><th>Duty Details</th><th>Duty Rate</th><th>Duty Amount(in ${impCurrency})</th>`;
@@ -422,7 +422,7 @@ function displaySaveDuty() {
                     ftaRule = !ftaRule ? _dd : ftaRule;
                     entry += `<tr><td>${_dd}</td>`;
                     entry += `<td>${_d}</td>`;
-                    entry += `<td>${_cl.toFixed(2)}</td>`;
+                    entry += `<td>${Math.floor(_cl)}</td>`;
                     entry += impCurrency != cyn ? `<td>${currencyConvert(_cl)}</td>` : "";
                     dutyCodes.push(ele[getKey]);
                 }
@@ -433,7 +433,7 @@ function displaySaveDuty() {
                 cyn: cyn,
                 code: duty[0].dutyDetails[1][key]
             });
-            let dutyTotal = duty[0].total ? (duty[0].total).toFixed(2) : 0;
+            let dutyTotal = duty[0].total ? Math.floor(duty[0].total) : 0;
             let totalPrecision = impCurrency != cyn && currencyConvert(dutyTotal);
             let htmlText = line + entry + `<tr><td colspan="2">Total Duty</td><td> ${dutyTotal} </td>`;
             htmlText += impCurrency != cyn ? `<td> ${totalPrecision} </td>` : "";
@@ -441,7 +441,7 @@ function displaySaveDuty() {
         }
 
         var string = "<div>";
-        let savedAmt = "Congratulation you have saved " + (total - getDutyTotal).toFixed(2) + " " + impCurrency + " in above transaction if imported under " + ftaRule;
+        let savedAmt = "Congratulation you have saved " + Math.floor(total - getDutyTotal) + " " + impCurrency + " in above transaction if imported under " + ftaRule;
         string += "<h3>Landed cost: " + total + " " + impCurrency;
         string += impCurrency != cyn ? ` ( ${cynConvertTotal} ${cyn} )</h3>` : "";
         string += "</div><div class='row'> <div class='tnc-note'><i>*Excluding destination freight, destination charges and intermediaries margin (importer, wholesaler, etc.) </i></div>";
