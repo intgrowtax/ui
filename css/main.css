@@ -29,6 +29,7 @@ td {
 .duty-details {
   margin: 20px auto;
   border: none;
+  max-height: fit-content;
 }
 
 .duty-block {
@@ -375,4 +376,76 @@ tr {
 .summary-value {
   padding-top: 10px;
   color: #6d809b;
+}
+
+.btn-find-hsn {
+  margin: 3px;
+  width: 100%;
+}
+
+.hsn-form {
+  margin-left: 0;
+}
+
+/* modal box */
+.box {
+  background-color: black;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+p {
+  font-size: 17px;
+  align-items: center;
+}
+
+.modal {
+  height: 100vh;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: all 0.4s;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 999;
+}
+
+.modal-body {
+  margin: 34px 32px;
+}
+
+.modal-btn {
+  margin: 0 auto;
+}
+
+.content {
+  position: absolute;
+  background: white;
+  width: 60%;
+  padding: 1em 2em;
+  border-radius: 4px;
+}
+
+.target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.box-close {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  color: #457b9d;
+  text-decoration: none;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 10px 15px;
 }

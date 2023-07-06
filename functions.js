@@ -224,6 +224,7 @@ function displayGetDuty() {
     // getRulesOfOrigin();  to be called for FTA
 
     let formDetails = "";
+    // const exportCountryList = document.getElementById('export_list');
     formDetails += `<div class='row'><div class='col-sm-9 row'><div class='col-sm-4 form-group'><span class='col-hs col-form-label'>Exporting</span><input type='text' class='form-control form-control-lg' value='${expCountryLabel}'></div>`;
     formDetails += `<div class='form-group col-sm-4'><span class='col-hs col-form-label'>Value of Product</span><input type='text' class='form-control form-control-lg' value='${inputData.CIFVALUE}'> </div>`;
     formDetails += `<div class='form-group col-sm-4'><span class='col-hs col-form-label'>Currency</span><input type='text' class='form-control form-control-lg' value='${cyn}'> </div></div>`;
@@ -278,7 +279,7 @@ function displayGetDuty() {
     line += `<div class='col-sm-6 summary-label'> CIF Value: </div> <div class='col-sm-6 summary-value'> ${getDutyResponse.CIFVALUE} </div>`;
     line += `<div class='col-sm-6 summary-label'> Total Duty: </div> <div class='col-sm-6 summary-value'> ${totalDuty} ${cyn}</div>`;
     line += `<div class='col-sm-6 summary-label'> Total Landed Cost: </div> <div class='col-sm-6 summary-value'> ${getdutyTotal}  ${cyn}</div>`;
-    line += `<div class='col-sm-6 summary-label'> HSN Description: </div> <div class='col-sm-6 summary-value'> ${getDutyResponse.des} </div>`;
+    line += `<div class='col-sm-6 summary-label'> HSN Description: </div> <div class='col-sm-12'> ${getDutyResponse.des} </div>`;
     line += `</div>`;
 
     showGetDutyDetails.innerHTML += line;
@@ -527,6 +528,33 @@ function displayHSCodes(ele) {
     document.getElementById("hscodeList").innerHTML = hsDataList;
 }
 
+function searchHSCode() {
+    let hscode = document.getElementById("hscode").value,
+        impCountry = document.getElementById("import_country").value,
+        string = '';
+    document.getElementById('popup-box').style.visibility = "visible";
+    document.getElementById('popup-box').style.opacity = "1";
+    document.getElementById('popup-box').style.display = "flex";
+
+    let searchHSForm = document.getElementById("searchHSN");
+    if (!impCountry) {
+        string = `<div class='row'><span> Select import country to continue</span></div>`;
+    }
+    else
+        if (impCountry) {
+            string = `<div class="row modal-body"> `;
+            string += `<div class="col col-sm-9"><input type="text" class="form-control form-control-lg" id="search-hscode" list="hscodeList" placeholder="Enter product name or HS code here..." aria-label="search"></div>`;
+            string += `<button id="hscodesubmit" type="button" class="btn btn-outline-primary btn-icon-text btn-center-align col-sm-3 modal-btn" onclick="getHSNSearch('${impCountry}', 'hs_search_result')"> Get Result</button>`;
+            string += `<div class="col-sm-12" id="hs_search_result"></div> </div></div>`;
+        }
+
+    searchHSForm.innerHTML = string;
+}
+
+function closeModal() {
+    document.getElementById('popup-box').style.visibility = "hidden";
+}
+
 function findHSCode(ele = '') {
     ele = document.getElementById("hscode").value;
     if ((ele.match(/^[0-9]+$/g) && ele.length > 1 && ele.length % 2 == 0) || (ele.match(/[a-zA-Z]+/g) && ele.length > 2)) {
@@ -601,6 +629,44 @@ function gotoForm(element1, element2) {
     formDisplay.style.display = 'flex';
 }
 
+async function fetchCountryHSN(hscode, importCountry, ele) {
+    const countryHSUrl = `${hostname}/api/getProductFromCountryCode?hs=${hscode}&imp=${importCountry}`;
+    impcountryHSResponse = await fetch(countryHSUrl);
+    if (!impcountryHSResponse.ok) {
+        const msg = `Error in fetch ${impcountryHSResponse.status}`;
+        throw new Error(msg);
+    }
+    const impHSMap = impcountryHSResponse.status != 204 ? await impcountryHSResponse.json() : [];
+    displayHSTable(ele, impHSMap, "", importCountry, "");
+}
+
+
+
+async function getHSNSearch(importCountry, searchHSFormEle) {
+    let hscode = document.getElementById('search-hscode').value;
+    importCountry = getCountryId(importCountry);
+    if (hscode.length > 2 && hscode.length < 7) {
+        const hsSearchsUrl = `${hostname}/api/hsCountrySearch?hs=${hscode}&imp=${importCountry}`;
+
+        fetch(hsSearchsUrl)
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then(function (data) {
+                data && showHSSearch(data, importCountry, searchHSFormEle);
+            }).catch(function (error) {
+                console.log("Error in HS Code details fetch, ", error);
+            });
+    }
+    else {
+        console.log(" Invalid input ");
+        // fetchCountryHSN(hscode, importCountry, searchHSFormEle);
+    }
+
+}
+
+
 async function getCountryHSCode(hscode, importCountry, exportCountry) {
     let hscodeForm = document.getElementById("hscode_form"),
         hsFreeTextTable = document.getElementById("hs_freetext_search"),
@@ -639,9 +705,56 @@ async function getCountryHSCode(hscode, importCountry, exportCountry) {
     displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry);
 }
 
-function displayFreeHSSearch(hs_codes, importCountry, exportCountry) {
+function fillHSNSearch(hscode) {
+    document.getElementById('hscode').value = hscode;
+    document.getElementById('popup-box').style.visibility = "hidden";
+    document.getElementById('popup-box').style.opacity = "0";
+    document.getElementById('popup-box').style.display = "none";
+    getUserInput();
+
+}
+
+async function getCountryHSSearch(hscode, imp, formEle) {
+    let hscodesDisplay = document.getElementById(formEle);
+    const countryHSUrl = `${hostname}/api/getProductFromCountryCode?hs=${hscode}&imp=${imp}`;
+    impcountryHSResponse = await fetch(countryHSUrl);
+    if (!impcountryHSResponse.ok) {
+        const msg = `Error in fetch ${impcountryHSResponse.status}`;
+        throw new Error(msg);
+    }
+    const impHSMap = impcountryHSResponse.status != 204 ? await impcountryHSResponse.json() : [];
+    let hscodeHTML = "", imp_hsn;
+    if (impHSMap && impHSMap.length) {
+        hscodeHTML = "<div class='row hstable-row'><div class='col-sm-12 hstable'>";
+        hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(imp, "label")} </span></div>`;
+        hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
+        impHSMap.forEach(d => {
+            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode" onclick="fillHSNSearch(this.value)"></td></tr>`;
+        });
+        hscodeHTML += "</table></div></div>";
+        imp_hsn = document.getElementById('imp_hscode');
+        hscodesDisplay.innerHTML = hscodeHTML;
+    }
+}
+
+function showHSSearch(hscode, importCountry, formEle) {
     let string = '';
-    let hsFreeTextTable = document.getElementById('hs_freetext_search');
+    let hsFreeTextTable = document.getElementById(formEle);
+    string = "<div class='row hstable-row justify-content-center'><div class='col-sm-11 hstable'>";
+    string += `<div class="hsfree-text-body">`;
+    string += `<table class="hstable-data"><tr> <th colspan="2"> HSN </th> </tr>`;
+    hscode.forEach(h => {
+        string += `<tr> <td> ${h.hs6} </td> <td><input type="radio" value="${h.hsn}" onclick='getCountryHSSearch("${h.hsn}","${importCountry}","${formEle}")' name="HSCode" id="hscode_select"></td></tr>`;
+    });
+    string += "</table></div></div></div>";
+    hsFreeTextTable.innerHTML = string;
+    hsFreeTextTable.style.visibility = 'visible';
+    hsFreeTextTable.style.display = 'flex';
+}
+
+function displayFreeHSSearch(hs_codes, importCountry, exportCountry, formEle = "hs_freetext_search") {
+    let string = '';
+    let hsFreeTextTable = document.getElementById(formEle);
     string = "<div class='row hstable-row justify-content-center'><div class='col-sm-11 hstable'>";
     string += `<div class="hsfree-text-body">`;
     string += `<table class="hstable-data"><tr> <th colspan="2"> HSN </th> </tr>`;
