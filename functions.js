@@ -36,7 +36,7 @@ function displayCountryList(countryListResponse) {
     impCountryHtml.innerHTML = impList;
 }
 
-function loadCountryList() {
+function loadCountryList(callback) {
     fetch(countryUrl)
         .then(function (response) {
             if (response.ok) {
@@ -48,6 +48,7 @@ function loadCountryList() {
         }).then(function (data) {
             countryListResponse = data;
             countryListResponse && displayCountryList(countryListResponse);
+            callback();
         }).catch(function (error) {
             console.log("Error in countryList fetch ", error);
         });
@@ -224,14 +225,21 @@ function displayGetDuty() {
     // getRulesOfOrigin();  to be called for FTA
 
     let formDetails = "";
-    // const exportCountryList = document.getElementById('export_list');
-    formDetails += `<div class='row'><div class='col-sm-9 row'><div class='col-sm-4 form-group'><span class='col-hs col-form-label'>Exporting</span><input type='text' class='form-control form-control-lg' value='${expCountryLabel}'></div>`;
-    formDetails += `<div class='form-group col-sm-4'><span class='col-hs col-form-label'>Value of Product</span><input type='text' class='form-control form-control-lg' value='${inputData.CIFVALUE}'> </div>`;
-    formDetails += `<div class='form-group col-sm-4'><span class='col-hs col-form-label'>Currency</span><input type='text' class='form-control form-control-lg' value='${cyn}'> </div></div>`;
+    const exportCountryList = document.getElementById('export_list');
+    const currencyList = document.getElementById('currencyList');
+    formDetails += `<div class='row'><div class='col-sm-9 row'><div class='col-sm-4 form-group'><label for="export_country" class="col col-form-label">Exporting</label>${exportCountryList.innerHTML}</div>`;
+    formDetails += `<div class='form-group col-sm-4'><label for="productValue" class="col col-form-label">Value of Product</label><input type='text' class='form-control form-control-lg' value='${inputData.CIFVALUE}' id='productValue'> </div>`;
+    formDetails += `<div class='form-group col-sm-4'><label for="cyn" class="col col-form-label">Currency</label>${currencyList.innerHTML} </div></div>`;
     formDetails += `<div class='col-sm-3 row'>`;
-    formDetails += `<div class='col-sm-6'><button class='btn btn-outline-primary btn-icon-text' id='callGetDuty' type='button' onclick='gotoForm(ele,ele)'>Get Result</button></div>`;
+    formDetails += `<div class='col-sm-6'><button class='btn btn-outline-primary btn-icon-text' id='callGetDuty' type='button' onclick='getDuty(event)'>Get Result</button></div>`;
     formDetails += `<div class='col-sm-6'><button class='btn btn-outline-primary btn-icon-text' id='showGetDutyForm' type='button' onclick='gotoForm("getdutyForm", "getdutyDetails")'>Modify</button></div></div></div>`;
 
+    let expLabel = document.getElementById('export_country');
+    document.querySelector('#export_countryList').value = expCountryLabel;
+
+    console.log("-- Val --- ", expLabel.value);
+    console.log(expLabel);
+    document.getElementById('cyn').value = cyn;
     const showGetDutyDetails = document.getElementById("getdutyDetails");
 
     showGetDutyDetails.innerHTML = "";
@@ -592,7 +600,11 @@ function storeHSValue(element, importCountry, exportCountry) {
 }
 
 function enableBtn(element) {
-    document.getElementById(element).disabled = false;
+    let impHSN = document.getElementById("imp_hscode"),
+        expHSN = document.getElementById("exp_hscode");
+    if (impHSN.checked && expHSN.checked) {
+        document.getElementById(element).disabled = false;
+    }
 }
 
 function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, exportCountry) {
@@ -795,12 +807,16 @@ function formPrefilledData() {
         impCountryElement = document.getElementById("import_country"),
         expCountryElement = document.getElementById("export_country");
 
-    if (hscode && hscodeElement) {
-        hscodeElement.value = hscode;
-    }
-    if (impCountry && impCountryElement) {
+    if (impCountry && impCountryElement && countryListResponse) {
         impCountryElement.value = impCountry;
+        loadCurrency();
+
+        if (hscode && hscodeElement) {
+            hscodeElement.value = hscode;
+            getUserInput();
+        }
     }
+
     if (expCountry && expCountryElement) {
         expCountryElement.value = expCountry;
     }

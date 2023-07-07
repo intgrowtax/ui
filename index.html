@@ -23,7 +23,7 @@
 </head>
 
 <body>
-  <script>loadCountryList(); </script>
+  <script>loadCountryList(formPrefilledData); </script>
   <div class="main">
     <header>
       <div class="header-bar">
@@ -240,7 +240,7 @@
 
                     <div class="form-group col-sm-4">
                       <label for="cyn" class="col col-form-label">Currency</label>
-                      <div class="btn-group col form-group-input">
+                      <div class="btn-group col form-group-input" id="currencyList">
                         <select class="form-control form-control-lg" id="cyn">
                           <option>Select currency</option>
                           <!-- load currency data -->
@@ -276,7 +276,7 @@
           </div>
 
           <script>
-            formPrefilledData();
+            // formPrefilledData();
             const el = document.getElementById('inco_term');
             const exw = document.getElementById('exw-select');
             const cif = document.getElementById('cif-select');
