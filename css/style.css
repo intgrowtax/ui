@@ -22014,6 +22014,7 @@ code {
   vertical-align: top;
   margin-bottom: 8px;
   padding-bottom: 0;
+  padding-right: 0;
 }
 
 .form-group.has-danger .form-control {
