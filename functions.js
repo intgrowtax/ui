@@ -599,10 +599,10 @@ function storeHSValue(element, importCountry, exportCountry) {
     window.location.href = "index.html";
 }
 
-function enableBtn(element) {
+function enableBtn(impHSMap, expHSMap, element) {
     let impHSN = document.getElementById("imp_hscode"),
         expHSN = document.getElementById("exp_hscode");
-    if (impHSN.checked && expHSN.checked) {
+    if (impHSMap && impHSN.checked && ( !expHSMap || expHSMap && expHSN.checked) || expHSMap && expHSN.checked && ( !impHSMap || (impHSMap && impHSN.checked)) ) {
         document.getElementById(element).disabled = false;
     }
 }
@@ -614,7 +614,7 @@ function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, expor
         hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(importCountry, "label")} </span></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         impHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode" onchange="enableBtn('store_val')"></td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="impHSCode" id="imp_hscode" onchange="enableBtn('${impHSMap}', '${expHSMap}','store_val')"></td></tr>`;
         });
         hscodeHTML += "</table></div></div>";
         imp_hsn = document.getElementById('imp_hscode');
@@ -624,12 +624,12 @@ function displayHSTable(hscodesDisplay, impHSMap, expHSMap, importCountry, expor
         hscodeHTML += `<div class="hstable-body"><div class="hstable-title"> <span>HS Codes for ${getCountryId(exportCountry, "label")} </span></div>`;
         hscodeHTML += `<table class="hstable-data"><tr> <th> HSN </th> <th colspan='2'> Product Description </th> </tr>`
         expHSMap.forEach(d => {
-            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="expHSCode" id="exp_hscode" onchange="enableBtn('store_val')"></td></tr>`;
+            hscodeHTML += `<tr> <td> ${d.value} </td> <td> ${d.label} </td><td><input type="radio" value="${d.value}" name="expHSCode" id="exp_hscode" onchange="enableBtn('${impHSMap}', '${expHSMap}','store_val')"></td></tr>`;
         });
         hscodeHTML += "</table></div></div>";
         exp_hsn = document.getElementById('exp_hscode');
     }
-    hscodeHTML += `<button id="store_val" class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${imp_hsn},"${importCountry}","${exportCountry}") disabled> Proceed to Import Duty Calculator</button></div>`;
+    hscodeHTML += `</div><div class="row hstable-row"><button id="store_val" class="btn btn-outline-primary btn-icon-text hstable-btn" onclick=storeHSValue(${imp_hsn},"${importCountry}","${exportCountry}") disabled> Proceed to Import Duty Calculator</button></div>`;
     hscodesDisplay.innerHTML += hscodeHTML;
 }
 
@@ -686,9 +686,9 @@ async function getCountryHSCode(hscode, importCountry, exportCountry) {
     hscodeForm.style.visibility = hsFreeTextTable.style.visibility = 'hidden';
     hscodeForm.style.display = hsFreeTextTable.style.display = 'none';
     let formDetails = "";
-    formDetails += `<div class='row hstable-form'><div class='col-sm-4'><span class='col-hs col-form-label'>Product Name/HS Code</span><input type='text' class='form-control form-control-lg' value='${hscode}'></div>`;
-    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Importing Country</span><input type='text' class='form-control form-control-lg' value='${importCountry}'> </div>`;
-    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Exporting Country</span><input type='text' class='form-control form-control-lg' value='${exportCountry}'> </div>`;
+    formDetails += `<div class='row hstable-form'><div class='col-sm-4'><span class='col-hs col-form-label'>Product Name/HS Code</span><input type='text' class='form-control form-control-lg' value='${hscode}' disabled></div>`;
+    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Importing Country</span><input type='text' class='form-control form-control-lg' value='${importCountry}' disabled> </div>`;
+    formDetails += `<div class='col-sm-3'><span class='col-hs col-form-label'>Exporting Country</span><input type='text' class='form-control form-control-lg' value='${exportCountry}' disabled> </div>`;
     formDetails += `<div class='col-sm-1'><button class='btn btn-outline-primary btn-icon-text' id='modifyHS' type='button' onclick='gotoForm("hscode_form", "show_hscodes")'>Modify</button></div>`
     hscodesDisplay.innerHTML = formDetails;
     importCountry = importCountry && getCountryId(importCountry);
@@ -699,8 +699,12 @@ async function getCountryHSCode(hscode, importCountry, exportCountry) {
     const impUrl = countryHSUrl + importCountry;
     const expUrl = countryHSUrl + exportCountry;
 
-    impcountryHSResponse = await fetch(impUrl);
-    expcountryHSResponse = await fetch(expUrl);
+    impcountryHSResponse = await fetch(impUrl).catch(function (error) {
+        console.log("Error in impHS ", error);
+    });
+    expcountryHSResponse = await fetch(expUrl).catch(function (error) {
+        console.log("Error in expHS ", error);
+    });
 
     if (!impcountryHSResponse.ok) {
         const msg = `Error in fetch ${impcountryHSResponse.status}`;
