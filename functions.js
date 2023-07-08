@@ -124,7 +124,7 @@ function displayCurrency() {
     const currencyHTML = document.getElementById("cyn");
     let cynData = "";
     currencyResponse.forEach(c => {
-        cynData += `<option id=${c.currency}>${c.country}</option>`;
+        cynData += `<option id=${c.currency} value='${c.country}' >${c.country}</option>`;
     });
     currencyHTML.innerHTML += cynData;
 }
@@ -225,20 +225,21 @@ function displayGetDuty() {
     // getRulesOfOrigin();  to be called for FTA
 
     let formDetails = "";
-    const exportCountryList = document.getElementById('export_list');
+    loadData(false);
+    let expLabel = document.getElementById('export_country');
+    const exportCountryList = document.getElementById('export_countryList');
     const currencyList = document.getElementById('currencyList');
-    formDetails += `<div class='row'><div class='col-sm-9 row'><div class='col-sm-4 form-group'><label for="export_country" class="col col-form-label">Exporting</label>${exportCountryList.innerHTML}</div>`;
+    
+    formDetails += `<div class='row'><div class='col-sm-9 row'><div class='col-sm-4 form-group'><label for='export_country' class='col col-form-label'>Exporting</label><input class='form-control form-control-lg' id='export_country' list='export_countryList' placeholder='Select country' value='${expLabel.value}'>${exportCountryList.outerHTML}</div>`;
     formDetails += `<div class='form-group col-sm-4'><label for="productValue" class="col col-form-label">Value of Product</label><input type='text' class='form-control form-control-lg' value='${inputData.CIFVALUE}' id='productValue'> </div>`;
-    formDetails += `<div class='form-group col-sm-4'><label for="cyn" class="col col-form-label">Currency</label>${currencyList.innerHTML} </div></div>`;
+    formDetails += `<div class='form-group col-sm-4'><label for="cyn" class="col col-form-label">Currency</label>${currencyList.outerHTML} </div></div>`;
     formDetails += `<div class='col-sm-3 row'>`;
     formDetails += `<div class='col-sm-6'><button class='btn btn-outline-primary btn-icon-text' id='callGetDuty' type='button' onclick='getDuty(event)'>Get Result</button></div>`;
     formDetails += `<div class='col-sm-6'><button class='btn btn-outline-primary btn-icon-text' id='showGetDutyForm' type='button' onclick='gotoForm("getdutyForm", "getdutyDetails")'>Modify</button></div></div></div>`;
 
-    let expLabel = document.getElementById('export_country');
-    document.querySelector('#export_countryList').value = expCountryLabel;
+    
+    document.querySelector('#export_countryList').value = expLabel.value;
 
-    console.log("-- Val --- ", expLabel.value);
-    console.log(expLabel);
     document.getElementById('cyn').value = cyn;
     const showGetDutyDetails = document.getElementById("getdutyDetails");
 
@@ -780,7 +781,7 @@ function formPrefilledData() {
 
     if (impCountry && impCountryElement && countryListResponse) {
         impCountryElement.value = impCountry;
-        loadCurrency();
+        loadData();
 
         if (hscode && hscodeElement) {
             hscodeElement.value = hscode;
