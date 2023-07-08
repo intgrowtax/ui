@@ -551,7 +551,7 @@ function searchHSCode() {
     else
         if (impCountry) {
             string = `<div class="row modal-body"> `;
-            string += `<div class="col col-sm-9"><input type="text" class="form-control form-control-lg" id="search-hscode" list="hscodeList" placeholder="Enter product name or HS code here..." aria-label="search"></div>`;
+            string += `<div class="col col-sm-9"><input type="text" class="form-control form-control-lg" id="search-hscode" placeholder="Enter product name or HS code here..." aria-label="search"></div>`;
             string += `<button id="hscodesubmit" type="button" class="btn btn-outline-primary btn-icon-text btn-center-align col-sm-3 modal-btn" onclick="getHSNSearch('${impCountry}', 'hs_search_result')"> Get Result</button>`;
             string += `<div class="col-sm-12" id="hs_search_result"></div> </div></div>`;
         }
@@ -657,25 +657,7 @@ async function fetchCountryHSN(hscode, importCountry, ele) {
 async function getHSNSearch(importCountry, searchHSFormEle) {
     let hscode = document.getElementById('search-hscode').value;
     importCountry = getCountryId(importCountry);
-    if (hscode.length > 2 && hscode.length < 7) {
-        const hsSearchsUrl = `${hostname}/api/hsCountrySearch?hs=${hscode}&imp=${importCountry}`;
-
-        fetch(hsSearchsUrl)
-            .then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                }
-            }).then(function (data) {
-                data && showHSSearch(data, importCountry, searchHSFormEle);
-            }).catch(function (error) {
-                console.log("Error in HS Code details fetch, ", error);
-            });
-    }
-    else {
-        console.log(" Invalid input ");
-        // fetchCountryHSN(hscode, importCountry, searchHSFormEle);
-    }
-
+    getCountryHSSearch(hscode, importCountry, searchHSFormEle);
 }
 
 
@@ -751,21 +733,6 @@ async function getCountryHSSearch(hscode, imp, formEle) {
         imp_hsn = document.getElementById('imp_hscode');
         hscodesDisplay.innerHTML = hscodeHTML;
     }
-}
-
-function showHSSearch(hscode, importCountry, formEle) {
-    let string = '';
-    let hsFreeTextTable = document.getElementById(formEle);
-    string = "<div class='row hstable-row justify-content-center'><div class='col-sm-11 hstable'>";
-    string += `<div class="hsfree-text-body">`;
-    string += `<table class="hstable-data"><tr> <th colspan="2"> HSN </th> </tr>`;
-    hscode.forEach(h => {
-        string += `<tr> <td> ${h.hs6} </td> <td><input type="radio" value="${h.hsn}" onclick='getCountryHSSearch("${h.hsn}","${importCountry}","${formEle}")' name="HSCode" id="hscode_select"></td></tr>`;
-    });
-    string += "</table></div></div></div>";
-    hsFreeTextTable.innerHTML = string;
-    hsFreeTextTable.style.visibility = 'visible';
-    hsFreeTextTable.style.display = 'flex';
 }
 
 function displayFreeHSSearch(hs_codes, importCountry, exportCountry, formEle = "hs_freetext_search") {
